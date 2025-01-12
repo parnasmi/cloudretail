@@ -4,4 +4,5 @@ export const {
   MIGRATIONS_DIR = '',
   ADMIN_PASSWORD = '',
   ADMIN_USERNAME = '',
+  HTTP_PORT = '',
 } = process.env;
