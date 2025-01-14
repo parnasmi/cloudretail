@@ -12,10 +12,7 @@ const bodySchema = zod.object({
   password: zod.string(),
 });
 
-export const createToken = async (
-  request: express.Request,
-  response: express.Response,
-) => {
+const handler: express.RequestHandler = async (request, response) => {
   const body = bodySchema.parse(request.body);
 
   const user = await userDao.selectByUsername(pool, {
@@ -32,4 +29,10 @@ export const createToken = async (
   const token = await tokenDao.createToken(pool, { userId: user.id });
 
   response.status(201).json({ token: token.token });
+};
+
+export const createToken = {
+  handler,
+  method: 'post' as const,
+  path: '/tokens',
 };

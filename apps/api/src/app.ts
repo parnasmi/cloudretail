@@ -1,7 +1,7 @@
 import express from 'express';
 import { HttpError } from './exceptions';
-import { tokensRouter } from './routers/tokens';
 import { ZodError } from 'zod';
+import { createToken } from './routers/tokens/createToken';
 
 export const app = express();
 
@@ -12,7 +12,7 @@ app.get('/', (req, res) => {
   res.status(200).json({ status: 'OK' });
 });
 
-app.use('/tokens', tokensRouter);
+app[createToken.method](createToken.path, createToken.handler);
 
 app.use(
   (
