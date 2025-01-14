@@ -1,2 +1,7 @@
-export { selectByUsername } from './selectByUsername';
-export { createUser } from './createUser';
+import { selectByUsername } from './selectByUsername';
+import { createUser } from './createUser';
+
+export const userDao = {
+  selectByUsername,
+  createUser,
+};
