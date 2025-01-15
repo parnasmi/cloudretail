@@ -4,9 +4,9 @@ import { userDao } from '../../daos/user';
 import crypto from 'crypto';
 import { HttpError } from '../../exceptions/httpErrors';
 import { tokenDao } from '../../daos/tokens';
-import { createHandler, Fetcher, HttpResponse } from '../../http';
+import { createHandler, createRoute, Fetcher, HttpResponse } from '../../http';
 
-export const createToken = {
+export const createToken = createRoute({
   handler: createHandler({
     bodySchema: zod.object({
       username: zod.string(),
@@ -31,6 +31,6 @@ export const createToken = {
   }),
   method: 'post' as const,
   path: '/tokens',
-};
+});
 
 export type CreateTokenFetcher = Fetcher<typeof createToken.handler>;
