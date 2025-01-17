@@ -1,12 +1,21 @@
 import { tokenDao } from '../../daos/tokens';
-import { createHandler, createRoute, Endpoint, HttpResponse } from '../../http';
-import zod from 'zod';
+import {
+  createHandler,
+  createRoute,
+  Endpoint,
+  Fetcher,
+  HttpResponse,
+} from '../../http';
 import { pool } from '../../pool';
 
+export const getTokenEndpoint = new Endpoint<{ id: number }>(
+  'get',
+  '/tokens/:id',
+);
+
 export const getToken = createRoute({
-  endpoint: new Endpoint<{ id: number }>('get', '/tokens/:id'),
+  endpoint: getTokenEndpoint,
   handler: createHandler({
-    bodySchema: zod.object({}),
     process: async ({ params }) => {
       const token = await tokenDao.selectById(pool, { id: params.id });
 
@@ -14,3 +23,5 @@ export const getToken = createRoute({
     },
   }),
 });
+
+export type GetTokenFetcher = Fetcher<typeof getToken.handler>;

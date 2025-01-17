@@ -12,6 +12,8 @@ import {
   HttpResponse,
 } from '../../http';
 
+export const createTokenEndpoint = new Endpoint('post', '/tokens');
+
 export const createToken = createRoute({
   handler: createHandler({
     bodySchema: zod.object({
@@ -35,7 +37,7 @@ export const createToken = createRoute({
       return new HttpResponse(201, token);
     },
   }),
-  endpoint: new Endpoint('post', '/tokens'),
+  endpoint: createTokenEndpoint,
 });
 
 export type CreateTokenFetcher = Fetcher<typeof createToken.handler>;

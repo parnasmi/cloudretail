@@ -1,6 +1,7 @@
 {
   "name": "@cloudretail/api",
   "type": "module",
+  "exports": "./src/export.ts",
   "scripts": {
     "build": "tsc --outDir dist",
     "lint": "eslint --fix .",
