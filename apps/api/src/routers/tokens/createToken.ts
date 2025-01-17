@@ -4,7 +4,13 @@ import { userDao } from '../../daos/user';
 import crypto from 'crypto';
 import { HttpError } from '../../exceptions/httpErrors';
 import { tokenDao } from '../../daos/tokens';
-import { createHandler, createRoute, Fetcher, HttpResponse } from '../../http';
+import {
+  createHandler,
+  createRoute,
+  Endpoint,
+  Fetcher,
+  HttpResponse,
+} from '../../http';
 
 export const createToken = createRoute({
   handler: createHandler({
@@ -29,8 +35,7 @@ export const createToken = createRoute({
       return new HttpResponse(201, token);
     },
   }),
-  method: 'post' as const,
-  path: '/tokens',
+  endpoint: new Endpoint('post', '/tokens'),
 });
 
 export type CreateTokenFetcher = Fetcher<typeof createToken.handler>;

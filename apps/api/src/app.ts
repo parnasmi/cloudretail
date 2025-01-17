@@ -3,6 +3,7 @@ import { HttpError } from './exceptions';
 import { ZodError } from 'zod';
 import { createToken } from './routers/tokens/createToken';
 import { registerRoute } from './http';
+import { getToken } from './routers/tokens/getToken';
 
 export const app = express();
 
@@ -14,6 +15,7 @@ app.get('/', (req, res) => {
 });
 
 registerRoute(app, createToken);
+registerRoute(app, getToken);
 
 app.use(
   (

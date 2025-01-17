@@ -1,6 +1,8 @@
 import zod from 'zod';
 import express from 'express';
 
+type Method = 'get' | 'post' | 'put' | 'delete';
+
 export class HttpResponse<Body> {
   constructor(
     public readonly status: number,
@@ -8,44 +10,58 @@ export class HttpResponse<Body> {
   ) {}
 }
 
-export type CreateHandlerOptions<RequestBody, ResponseBody> = {
+export class Endpoint<_RequestParams> {
+  constructor(
+    public readonly method: Method,
+    public readonly path: string,
+  ) {}
+}
+
+type Context<RequestParams, RequestBody> = {
+  params: RequestParams;
+  body: RequestBody;
+};
+
+type Process<RequestParams, RequestBody, ResponseBody> = (
+  context: Context<RequestParams, RequestBody>,
+) => Promise<HttpResponse<ResponseBody>>;
+
+export type CreateHandlerOptions<RequestParams, RequestBody, ResponseBody> = {
   bodySchema: zod.ZodSchema<RequestBody>;
-  process: (params: {
-    body: RequestBody;
-  }) => Promise<HttpResponse<ResponseBody>>;
+  process: Process<RequestParams, RequestBody, ResponseBody>;
 };
 
 export const createHandler = <RequestParams, RequestBody, ResponseBody>({
   bodySchema,
   process,
-}: CreateHandlerOptions<RequestBody, ResponseBody>): express.RequestHandler<
+}: CreateHandlerOptions<
   RequestParams,
-  ResponseBody,
-  RequestBody
-> => {
+  RequestBody,
+  ResponseBody
+>): express.RequestHandler<RequestParams, ResponseBody, RequestBody> => {
   return async (request, response) => {
     const { status, body } = await process({
+      params: request.params,
       body: bodySchema.parse(request.body),
     });
     response.status(status).json(body);
   };
 };
 
-export const createRoute = <RequestParams, RequestBody, ResponseBody>(
-  route: Route<RequestParams, ResponseBody, RequestBody>,
-) => route;
-
 export type Route<RequestParams, RequestBody, ResponseBody> = {
-  path: string;
-  method: 'get' | 'post' | 'put' | 'delete';
+  endpoint: Endpoint<RequestParams>;
   handler: express.RequestHandler<RequestParams, ResponseBody, RequestBody>;
 };
+
+export const createRoute = <RequestParams, RequestBody, ResponseBody>(
+  route: Route<RequestParams, RequestBody, ResponseBody>,
+) => route;
 
 export const registerRoute = <RequestParams, RequestBody, ResponseBody>(
   router: express.Router,
   route: Route<RequestParams, RequestBody, ResponseBody>,
 ) => {
-  router[route.method](route.path, route.handler);
+  router[route.endpoint.method](route.endpoint.path, route.handler);
 };
 
 export type Fetcher<Handler> =
@@ -54,8 +70,5 @@ export type Fetcher<Handler> =
     infer ResponseBody,
     infer RequestBody
   >
-    ? (options: {
-        params: RequestParams;
-        body: RequestBody;
-      }) => Promise<ResponseBody>
+    ? (context: Context<RequestParams, RequestBody>) => Promise<ResponseBody>
     : never;
