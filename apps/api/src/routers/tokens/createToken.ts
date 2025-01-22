@@ -4,15 +4,8 @@ import { userDao } from '../../daos/user';
 import crypto from 'crypto';
 import { HttpError } from '../../exceptions/httpErrors';
 import { tokenDao } from '../../daos/tokens';
-import {
-  createHandler,
-  createRoute,
-  Endpoint,
-  Fetcher,
-  HttpResponse,
-} from '../../http';
-
-export const createTokenEndpoint = new Endpoint('post', '/tokens');
+import { createHandler, createRoute, Fetcher, HttpResponse } from '../../http';
+import { createTokenEndpoint } from '../../endpoints';
 
 export const createToken = createRoute({
   handler: createHandler({

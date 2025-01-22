@@ -1,17 +1,7 @@
 import { tokenDao } from '../../daos/tokens';
-import {
-  createHandler,
-  createRoute,
-  Endpoint,
-  Fetcher,
-  HttpResponse,
-} from '../../http';
+import { getTokenEndpoint } from '../../endpoints';
+import { createHandler, createRoute, Fetcher, HttpResponse } from '../../http';
 import { pool } from '../../pool';
-
-export const getTokenEndpoint = new Endpoint<{ id: number }>(
-  'get',
-  '/tokens/:id',
-);
 
 export const getToken = createRoute({
   endpoint: getTokenEndpoint,
