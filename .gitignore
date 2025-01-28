@@ -2,6 +2,8 @@ node_modules
 .idea
 dist
 .env
+apps/api/dist
+apps/ui/dist
 
 # misc
 .DS_Store

@@ -1,3 +1,3 @@
-export { MultipleRecordsFound } from './MultipleRecordsFound';
-export { NoRecordsFound } from './NoRecordsFound';
-export { HttpError } from './httpErrors';
+export { MultipleRecordsFound } from './MultipleRecordsFound.js';
+export { NoRecordsFound } from './NoRecordsFound.js';
+export { HttpError } from './httpErrors.js';

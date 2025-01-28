@@ -1,12 +1,17 @@
 import zod from 'zod';
-import { pool } from '../../pool';
-import { userDao } from '../../daos/user';
+import { pool } from '../../pool.js';
+import { userDao } from '../../daos/user/index.js';
 import crypto from 'crypto';
-import { HttpError } from '../../exceptions/httpErrors';
-import { tokenDao } from '../../daos/tokens';
-import { createHandler, createRoute, Fetcher, HttpResponse } from '../../http';
-import { createTokenEndpoint } from '../../endpoints';
-import { tryCatch } from '../../tryCatch';
+import { HttpError } from '../../exceptions/httpErrors.js';
+import { tokenDao } from '../../daos/tokens/index.js';
+import {
+  createHandler,
+  createRoute,
+  Fetcher,
+  HttpResponse,
+} from '../../http.js';
+import { createTokenEndpoint } from '../../endpoints.js';
+import { tryCatch } from '../../tryCatch.js';
 
 export const createToken = createRoute({
   handler: createHandler({
