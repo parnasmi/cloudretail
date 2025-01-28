@@ -10,12 +10,14 @@ export const parseAuth = async (authorizationHeader?: string) => {
 
   const parsed = /^Bearer (.*)$/.exec(authorizationHeader);
 
+  // Check whether token is in valid format
   if (parsed === null) {
     return new HttpError(401, 'Invalid authorization header');
   }
 
   const tokenId = parsed[1];
 
+  //Check tokenId is not empty
   if (!tokenId) {
     return new HttpError(401, 'Invalid beared token');
   }
