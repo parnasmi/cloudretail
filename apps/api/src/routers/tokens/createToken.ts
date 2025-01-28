@@ -6,6 +6,7 @@ import { HttpError } from '../../exceptions/httpErrors';
 import { tokenDao } from '../../daos/tokens';
 import { createHandler, createRoute, Fetcher, HttpResponse } from '../../http';
 import { createTokenEndpoint } from '../../endpoints';
+import { tryCatch } from '../../tryCatch';
 
 export const createToken = createRoute({
   handler: createHandler({
@@ -14,18 +15,23 @@ export const createToken = createRoute({
       password: zod.string(),
     }),
     process: async ({ body }) => {
-      const user = await userDao.selectByUsername(pool, {
-        username: body.username,
+      const userQuery = await tryCatch(() => {
+        return userDao.selectByUsername(pool, {
+          username: body.username,
+        });
       });
 
       if (
-        user.password !==
-        crypto.createHash('sha256').update(body.password).digest('hex')
+        !userQuery.ok ||
+        userQuery.output.password !==
+          crypto.createHash('sha256').update(body.password).digest('hex')
       ) {
         throw new HttpError(401, 'Invalid password or username');
       }
 
-      const token = await tokenDao.createToken(pool, { userId: user.id });
+      const token = await tokenDao.createToken(pool, {
+        userId: userQuery.output.id,
+      });
 
       return new HttpResponse(201, token);
     },
