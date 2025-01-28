@@ -1,15 +1,15 @@
 import crypto from 'crypto';
 import { DbClient } from './pool';
-import * as userDao from './daos/user';
+import { userDao } from './daos/user';
 import { ADMIN_PASSWORD, ADMIN_USERNAME } from './constants';
 import { NoRecordsFound } from './exceptions';
 
-export const seed = async (client: DbClient) => {
+export const seed = async (dbClient: DbClient) => {
   try {
-    await userDao.selectByUsername(client, { username: ADMIN_USERNAME });
+    await userDao.selectByUsername(dbClient, { username: ADMIN_USERNAME });
   } catch (error) {
     if (error instanceof NoRecordsFound) {
-      await userDao.createUser(client, {
+      await userDao.createUser(dbClient, {
         username: ADMIN_USERNAME,
         password: crypto
           .createHash('sha256')
