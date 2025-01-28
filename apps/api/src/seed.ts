@@ -1,8 +1,8 @@
 import crypto from 'crypto';
-import { DbClient } from './pool';
-import { userDao } from './daos/user';
-import { ADMIN_PASSWORD, ADMIN_USERNAME } from './constants';
-import { NoRecordsFound } from './exceptions';
+import { DbClient } from './pool.js';
+import { userDao } from './daos/user/index.js';
+import { ADMIN_PASSWORD, ADMIN_USERNAME } from './constants.js';
+import { NoRecordsFound } from './exceptions/index.js';
 
 export const seed = async (dbClient: DbClient) => {
   try {

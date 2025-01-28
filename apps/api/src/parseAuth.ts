@@ -1,7 +1,7 @@
-import { tokenDao } from './daos/tokens';
-import { userDao } from './daos/user';
-import { HttpError } from './exceptions';
-import { pool } from './pool';
+import { tokenDao } from './daos/tokens/index.js';
+import { userDao } from './daos/user/index.js';
+import { HttpError } from './exceptions/index.js';
+import { pool } from './pool.js';
 
 export const parseAuth = async (authorizationHeader?: string) => {
   if (!authorizationHeader) {
