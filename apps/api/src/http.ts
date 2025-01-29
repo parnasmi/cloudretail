@@ -36,7 +36,7 @@ export type CreateHandlerOptions<RequestParams, RequestBody, ResponseBody> = {
   process: Process<RequestParams, RequestBody, ResponseBody>;
 };
 
-export const createHandler = <RequestParams, RequestBody, ResponseBody>({
+const createHandler = <RequestParams, RequestBody, ResponseBody>({
   bodySchema,
   process,
 }: CreateHandlerOptions<
@@ -57,7 +57,8 @@ export const createHandler = <RequestParams, RequestBody, ResponseBody>({
 
 export type Route<RequestParams, RequestBody, ResponseBody> = {
   endpoint: Endpoint<RequestParams>;
-  handler: express.RequestHandler<RequestParams, ResponseBody, RequestBody>;
+  bodySchema?: zod.ZodSchema<RequestBody>;
+  process: Process<RequestParams, RequestBody, ResponseBody>;
 };
 
 export const createRoute = <RequestParams, RequestBody, ResponseBody>(
@@ -68,14 +69,16 @@ export const registerRoute = <RequestParams, RequestBody, ResponseBody>(
   router: express.Router,
   route: Route<RequestParams, RequestBody, ResponseBody>,
 ) => {
-  router[route.endpoint.method](route.endpoint.path, route.handler);
+  router[route.endpoint.method](
+    route.endpoint.path,
+    createHandler({
+      bodySchema: route.bodySchema,
+      process: route.process,
+    }),
+  );
 };
 
-export type Fetcher<Handler> =
-  Handler extends express.RequestHandler<
-    infer RequestParams,
-    infer ResponseBody,
-    infer RequestBody
-  >
+export type Fetcher<R> =
+  R extends Route<infer RequestParams, infer RequestBody, infer ResponseBody>
     ? (context: Context<RequestParams, RequestBody>) => Promise<ResponseBody>
     : never;
