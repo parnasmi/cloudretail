@@ -8,3 +8,6 @@ apps/ui/dist
 # misc
 .DS_Store
 *.pem
+
+# database
+apps/api/docker/postgres
