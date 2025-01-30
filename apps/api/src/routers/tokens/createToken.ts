@@ -10,11 +10,12 @@ import { tryCatch } from '../../tryCatch.js';
 
 export const createToken = createRoute({
   endpoint: createTokenEndpoint,
+  auth: true,
   bodySchema: zod.object({
     username: zod.string(),
     password: zod.string(),
   }),
-  process: async ({ body }) => {
+  process: async ({ body, auth }) => {
     const userQuery = await tryCatch(() => {
       return userDao.selectByUsername(pool, {
         username: body.username,

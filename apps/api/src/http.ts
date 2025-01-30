@@ -1,5 +1,6 @@
 import zod from 'zod';
 import express from 'express';
+import { parseAuth } from './parseAuth.js';
 
 type Method = 'get' | 'post' | 'put' | 'delete';
 
@@ -21,57 +22,92 @@ type ObjectWithKnownKeys<K extends string, T> = T extends {}
   ? Record<K, T>
   : Record<never, never>;
 
-type Context<RequestParams, RequestBody> = ObjectWithKnownKeys<
-  'params',
-  RequestParams
-> &
+type Context<
+  RequestParams,
+  RequestBody,
+  Auth extends boolean,
+> = (Auth extends true
+  ? Record<'auth', Awaited<ReturnType<typeof parseAuth>>>
+  : Record<never, never>) &
+  ObjectWithKnownKeys<'params', RequestParams> &
   ObjectWithKnownKeys<'body', RequestBody>;
 
-type Process<RequestParams, RequestBody, ResponseBody> = (
-  context: Context<RequestParams, RequestBody>,
+type Process<RequestParams, RequestBody, ResponseBody, Auth extends boolean> = (
+  context: Context<RequestParams, RequestBody, Auth>,
 ) => Promise<HttpResponse<ResponseBody>>;
 
-export type CreateHandlerOptions<RequestParams, RequestBody, ResponseBody> = {
+export type CreateHandlerOptions<
+  RequestParams,
+  RequestBody,
+  ResponseBody,
+  Auth extends boolean,
+> = {
+  auth?: Auth;
   bodySchema?: zod.ZodSchema<RequestBody>;
-  process: Process<RequestParams, RequestBody, ResponseBody>;
+  process: Process<RequestParams, RequestBody, ResponseBody, Auth>;
 };
 
-const createHandler = <RequestParams, RequestBody, ResponseBody>({
+const createHandler = <
+  RequestParams,
+  RequestBody,
+  ResponseBody,
+  Auth extends boolean,
+>({
+  auth,
   bodySchema,
   process,
 }: CreateHandlerOptions<
   RequestParams,
   RequestBody,
-  ResponseBody
+  ResponseBody,
+  Auth
 >): express.RequestHandler<RequestParams, ResponseBody, RequestBody> => {
   return async (request, response) => {
     const { status, body } = await process({
+      auth: auth ? await parseAuth(request.headers.authorization) : undefined,
       params: request.params,
       body: bodySchema
         ? bodySchema.parse(request.body)
         : (undefined as RequestBody),
-    } as unknown as Context<RequestParams, RequestBody>);
+    } as unknown as Context<RequestParams, RequestBody, Auth>);
     response.status(status).json(body);
   };
 };
 
-export type Route<RequestParams, RequestBody, ResponseBody> = {
+export type Route<
+  RequestParams,
+  RequestBody,
+  ResponseBody,
+  Auth extends boolean,
+> = {
   endpoint: Endpoint<RequestParams>;
+  auth?: Auth;
   bodySchema?: zod.ZodSchema<RequestBody>;
-  process: Process<RequestParams, RequestBody, ResponseBody>;
+  process: Process<RequestParams, RequestBody, ResponseBody, Auth>;
 };
 
-export const createRoute = <RequestParams, RequestBody, ResponseBody>(
-  route: Route<RequestParams, RequestBody, ResponseBody>,
+export const createRoute = <
+  RequestParams,
+  RequestBody,
+  ResponseBody,
+  Auth extends boolean,
+>(
+  route: Route<RequestParams, RequestBody, ResponseBody, Auth>,
 ) => route;
 
-export const registerRoute = <RequestParams, RequestBody, ResponseBody>(
+export const registerRoute = <
+  RequestParams,
+  RequestBody,
+  ResponseBody,
+  Auth extends boolean,
+>(
   router: express.Router,
-  route: Route<RequestParams, RequestBody, ResponseBody>,
+  route: Route<RequestParams, RequestBody, ResponseBody, Auth>,
 ) => {
   router[route.endpoint.method](
     route.endpoint.path,
     createHandler({
+      auth: route.auth,
       bodySchema: route.bodySchema,
       process: route.process,
     }),
@@ -79,6 +115,13 @@ export const registerRoute = <RequestParams, RequestBody, ResponseBody>(
 };
 
 export type Fetcher<R> =
-  R extends Route<infer RequestParams, infer RequestBody, infer ResponseBody>
-    ? (context: Context<RequestParams, RequestBody>) => Promise<ResponseBody>
+  R extends Route<
+    infer RequestParams,
+    infer RequestBody,
+    infer ResponseBody,
+    infer Auth
+  >
+    ? (
+        context: Context<RequestParams, RequestBody, Auth>,
+      ) => Promise<ResponseBody>
     : never;
