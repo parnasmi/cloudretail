@@ -4,6 +4,7 @@ import { ZodError } from 'zod';
 import { createToken } from './routers/tokens/createToken.js';
 import { registerRoute } from './http.js';
 import { getToken } from './routers/tokens/getToken.js';
+import { getAllTokens } from './routers/tokens/getAllTokens.js';
 
 export const app = express();
 
@@ -16,6 +17,7 @@ app.get('/', (req, res) => {
 
 registerRoute(app, createToken);
 registerRoute(app, getToken);
+registerRoute(app, getAllTokens);
 
 app.use(
   (
