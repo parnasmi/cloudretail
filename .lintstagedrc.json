@@ -1,3 +1,5 @@
 {
-  "*": "prettier --ignore-unknown --write --allow-empty"
+  "*": "prettier --ignore-unknown --write --allow-empty",
+  "apps/api/**/*.{js,ts}": "npm -w apps/api run lint",
+  "apps/ui/**/*.{js,ts,jsx,tsx}": "npm -w apps/ui run lint"
 }

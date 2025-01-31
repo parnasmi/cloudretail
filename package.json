@@ -2,7 +2,11 @@
   "name": "cloudretail",
   "scripts": {
     "format": "prettier --ignore-unknown --write .",
-    "prepare": "husky"
+    "prepare": "husky",
+    "docker:compose:up:build": "docker compose up --build -d",
+    "docker:compose:up": "docker compose up",
+    "docker:compose:up:dev": "docker compose up -d",
+    "docker:compose:down": "docker compose down"
   },
   "workspaces": [
     "apps/*"
