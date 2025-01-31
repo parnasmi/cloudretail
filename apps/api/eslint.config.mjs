@@ -9,7 +9,7 @@ export default tseslint.config(
   tseslint.configs.recommendedTypeChecked,
   safeql.configs.connections({
     // read more about configuration in the next section
-    databaseUrl: 'postgres://postgres:postgres@localhost:5432/postgres',
+    databaseUrl: 'postgres://postgres:postgres@localhost:5431/postgres',
     overrides: {
       types: {
         uuid: 'string',
