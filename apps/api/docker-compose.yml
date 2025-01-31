@@ -6,6 +6,8 @@ services:
     ports:
       - '127.0.0.1:5432:5432'
     command: postgres -c log_statement=all
+    volumes:
+      - postgres_data_cloudretail:/var/lib/postgresql/data
   dbgate:
     image: dbgate/dbgate
     environment:
@@ -18,3 +20,5 @@ services:
       ENGINE_CN1: postgres@dbgate-plugin-postgres
     ports:
       - '127.0.0.1:5433:3000'
+volumes:
+  postgres_data_cloudretail:
