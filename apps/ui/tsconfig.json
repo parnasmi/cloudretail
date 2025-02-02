@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
+    "jsx": "react-jsx",
     "lib": ["dom", "ES2015"],
     "module": "ESNext",
     "moduleResolution": "bundler",
