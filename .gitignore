@@ -8,3 +8,4 @@ apps/ui/dist
 # misc
 .DS_Store
 *.pem
+package-lock.json
