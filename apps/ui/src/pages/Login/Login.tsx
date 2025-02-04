@@ -1,7 +1,32 @@
 import React from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import { Button } from '../../shared/ui/Button/Button';
+import { Form } from '../../shared/ui/Form/Form';
+import { Input } from '../../shared/ui/Input/Input';
+import { Label } from '../../shared/ui/Label/Label';
+
+const loginSchema = z.object({
+  email: z.string().email('Invalid email address'),
+  password: z.string().min(6, 'Password must be at least 6 characters'),
+});
+
+type LoginFormData = z.infer<typeof loginSchema>;
 
 export const Login: React.FC = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+  });
+
+  const onSubmit = (data: LoginFormData) => {
+    console.log(data);
+    // Handle login logic here
+  };
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
       <div className="w-full max-w-md space-y-8">
@@ -10,35 +35,43 @@ export const Login: React.FC = () => {
             Sign in to your account
           </h2>
         </div>
-        <form className="mt-8 space-y-6">
+        <Form onSubmit={handleSubmit(onSubmit)}>
           <div className="-space-y-px rounded-md shadow-sm">
             <div>
-              <label htmlFor="email-address" className="sr-only">
+              <Label htmlFor="email-address" srOnly>
                 Email address
-              </label>
-              <input
+              </Label>
+              <Input
                 id="email-address"
-                name="email"
                 type="email"
                 autoComplete="email"
-                required
-                className="relative block w-full rounded-t-md border-0 p-1.5 text-gray-900 ring-1 ring-gray-300 ring-inset placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-indigo-600 focus:ring-inset"
+                rounded="top"
                 placeholder="Email address"
+                {...register('email')}
               />
+              {errors.email && (
+                <div className="mt-1 text-sm text-red-600">
+                  {errors.email.message}
+                </div>
+              )}
             </div>
             <div>
-              <label htmlFor="password" className="sr-only">
+              <Label htmlFor="password" srOnly>
                 Password
-              </label>
-              <input
+              </Label>
+              <Input
                 id="password"
-                name="password"
                 type="password"
                 autoComplete="current-password"
-                required
-                className="relative block w-full rounded-b-md border-0 p-1.5 text-gray-900 ring-1 ring-gray-300 ring-inset placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-indigo-600 focus:ring-inset"
+                rounded="bottom"
                 placeholder="Password"
+                {...register('password')}
               />
+              {errors.password && (
+                <div className="mt-1 text-sm text-red-600">
+                  {errors.password.message}
+                </div>
+              )}
             </div>
           </div>
           <div>
@@ -46,7 +79,7 @@ export const Login: React.FC = () => {
               Sign in
             </Button>
           </div>
-        </form>
+        </Form>
       </div>
     </div>
   );
