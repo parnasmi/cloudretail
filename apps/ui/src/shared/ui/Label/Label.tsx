@@ -18,9 +18,14 @@ const StyledLabel = classed(
 );
 
 export interface LabelProps extends ComponentProps<typeof StyledLabel> {
-  htmlFor?: string;
+  text?: string;
 }
 
-export const Label = ({ children, ...props }: LabelProps) => {
-  return <StyledLabel {...props}>{children}</StyledLabel>;
+export const Label = ({ children, text, ...props }: LabelProps) => {
+  return (
+    <StyledLabel {...props}>
+      {text && !props.srOnly && <span className="mb-1 block">{text}</span>}
+      {children}
+    </StyledLabel>
+  );
 };

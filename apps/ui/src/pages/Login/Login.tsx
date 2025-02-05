@@ -38,17 +38,16 @@ export const Login: React.FC = () => {
         <Form onSubmit={handleSubmit(onSubmit)}>
           <div className="-space-y-px rounded-md shadow-sm">
             <div>
-              <Label htmlFor="email-address" srOnly>
-                Email address
+              <Label srOnly>
+                <Input
+                  id="email-address"
+                  type="email"
+                  autoComplete="email"
+                  rounded="top"
+                  placeholder="Email address"
+                  {...register('email')}
+                />
               </Label>
-              <Input
-                id="email-address"
-                type="email"
-                autoComplete="email"
-                rounded="top"
-                placeholder="Email address"
-                {...register('email')}
-              />
               {errors.email && (
                 <div className="mt-1 text-sm text-red-600">
                   {errors.email.message}
@@ -56,17 +55,16 @@ export const Login: React.FC = () => {
               )}
             </div>
             <div>
-              <Label htmlFor="password" srOnly>
-                Password
+              <Label srOnly>
+                <Input
+                  id="password"
+                  type="password"
+                  autoComplete="current-password"
+                  rounded="bottom"
+                  placeholder="Password"
+                  {...register('password')}
+                />
               </Label>
-              <Input
-                id="password"
-                type="password"
-                autoComplete="current-password"
-                rounded="bottom"
-                placeholder="Password"
-                {...register('password')}
-              />
               {errors.password && (
                 <div className="mt-1 text-sm text-red-600">
                   {errors.password.message}
