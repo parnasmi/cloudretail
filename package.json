@@ -2,7 +2,14 @@
   "name": "cloudretail",
   "scripts": {
     "format": "prettier --ignore-unknown --write .",
-    "prepare": "husky"
+    "prepare": "husky",
+    "docker:compose:up:build": "docker compose up --build -d",
+    "docker:compose:up": "docker compose up",
+    "docker:compose:up:dev": "docker compose up -d",
+    "docker:compose:down": "docker compose down",
+    "ws:api:start": "npm -w apps/api run start",
+    "ws:ui:start": "npm -w apps/ui run start",
+    "start": "npm-run-all --parallel ws:api:start ws:ui:start"
   },
   "workspaces": [
     "apps/*"
@@ -10,6 +17,7 @@
   "devDependencies": {
     "husky": "^9.1.7",
     "lint-staged": "^15.3.0",
+    "npm-run-all": "^4.1.5",
     "prettier": "^3.4.2"
   }
 }

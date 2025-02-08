@@ -3,5 +3,10 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
   },
+  "tailwindCSS.experimental.classRegex": [
+    ["classed(?:\\.\\w*)?\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]
+  ],
+  "windsurf.marketplaceExtensionGalleryServiceURL": "https://marketplace.visualstudio.com/_apis/public/gallery",
+  "windsurf.marketplaceGalleryItemURL": "https://marketplace.visualstudio.com/items",
   "eslint.validate": ["typescript"]
 }
