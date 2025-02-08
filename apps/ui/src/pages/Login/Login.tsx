@@ -38,7 +38,7 @@ export const Login: React.FC = () => {
         <Form onSubmit={handleSubmit(onSubmit)}>
           <div className="-space-y-px rounded-md shadow-sm">
             <div>
-              <Label srOnly>
+              <Label>
                 <Input
                   id="email-address"
                   type="email"
@@ -55,7 +55,7 @@ export const Login: React.FC = () => {
               )}
             </div>
             <div>
-              <Label srOnly>
+              <Label>
                 <Input
                   id="password"
                   type="password"

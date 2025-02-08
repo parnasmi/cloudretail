@@ -1,30 +1,19 @@
 import { classed } from '@tw-classed/react';
 import { ComponentProps } from 'react';
 
-const StyledLabel = classed(
-  'label',
-  'block text-sm font-medium text-gray-700',
-  {
-    variants: {
-      srOnly: {
-        true: 'sr-only',
-        false: '',
-      },
-    },
-    defaultVariants: {
-      srOnly: false,
-    },
-  },
-);
+const StyledLabel = classed('label', 'block text-sm font-medium text-gray-700');
 
 export interface LabelProps extends ComponentProps<typeof StyledLabel> {
   text?: string;
+  srOnly?: boolean;
 }
 
-export const Label = ({ children, text, ...props }: LabelProps) => {
+export const Label = ({ children, text, srOnly, ...props }: LabelProps) => {
   return (
     <StyledLabel {...props}>
-      {text && !props.srOnly && <span className="mb-1 block">{text}</span>}
+      {text && (
+        <span className={`mb-1 block ${srOnly ? 'sr-only' : ''}`}>{text}</span>
+      )}
       {children}
     </StyledLabel>
   );
