@@ -13,6 +13,7 @@ const fetchJSON = async <RequestBody, ResponseBody>({
   method,
   body,
 }: FetchJSONArgs<RequestBody>) => {
+  debugger;
   const response = await fetch(url, {
     method,
     headers: {
@@ -36,7 +37,7 @@ export const createFetcher = <Fetcher>({ path, method }: Endpoint<unknown>) => {
   }) => {
     const url = getUrl(params);
 
-    return fetchJSON({ url: url, method, body });
+    return fetchJSON({ url: `api${url}`, method, body });
   };
 
   return fetcher as Fetcher;
