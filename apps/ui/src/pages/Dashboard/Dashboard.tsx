@@ -1,4 +1,7 @@
-import React from 'react';
+import { useAuthContext } from '@/app/authProvider';
+import { api } from '@/shared/api/api';
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router';
 
 export const Dashboard: React.FC = () => {
   const dummyData = {
@@ -8,8 +11,30 @@ export const Dashboard: React.FC = () => {
     revenue: '$45,678',
   };
 
+  const { setValue, value } = useAuthContext();
+  const navigage = useNavigate();
+
+  useEffect(() => {
+    (async () => {
+      const tokenId = localStorage.getItem('token');
+      if (!tokenId) {
+        await navigage('/login');
+        return;
+      }
+
+      const token = await api.getToken({ params: { id: tokenId } });
+
+      if (!token) {
+        await navigage('/login');
+        return;
+      }
+      setValue(token);
+    })();
+  }, []);
+
   return (
     <div className="p-6">
+      {value?.token}
       <h1 className="mb-6 text-2xl font-bold text-gray-800">Dashboard</h1>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
         <div className="rounded-lg bg-white p-6 shadow-md">

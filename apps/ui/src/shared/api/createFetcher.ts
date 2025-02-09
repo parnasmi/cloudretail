@@ -13,7 +13,6 @@ const fetchJSON = async <RequestBody, ResponseBody>({
   method,
   body,
 }: FetchJSONArgs<RequestBody>) => {
-  debugger;
   const response = await fetch(url, {
     method,
     headers: {
