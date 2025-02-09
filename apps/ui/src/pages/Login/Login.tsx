@@ -2,13 +2,15 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Button } from '../../shared/ui/Button/Button';
-import { Form } from '../../shared/ui/Form/Form';
-import { Input } from '../../shared/ui/Input/Input';
-import { Label } from '../../shared/ui/Label/Label';
+import { Button } from '@shared/ui/Button/Button';
+import { Form } from '@shared/ui/Form/Form';
+import { Input } from '@shared/ui/Input/Input';
+import { Label } from '@shared/ui/Label/Label';
+import { api } from '@shared/api/api';
+import { useNavigate } from 'react-router';
 
 const loginSchema = z.object({
-  email: z.string().email('Invalid email address'),
+  username: z.string(),
   password: z.string().min(6, 'Password must be at least 6 characters'),
 });
 
@@ -23,9 +25,12 @@ export const Login: React.FC = () => {
     resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit = (data: LoginFormData) => {
-    console.log(data);
-    // Handle login logic here
+  const navigate = useNavigate();
+
+  const onSubmit = async (data: LoginFormData) => {
+    const token = await api.createToken({ body: data });
+    localStorage.setItem('token', token.token);
+    await navigate('/');
   };
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
@@ -40,17 +45,15 @@ export const Login: React.FC = () => {
             <div>
               <Label>
                 <Input
-                  id="email-address"
-                  type="email"
-                  autoComplete="email"
+                  autoComplete="usermae"
                   rounded="top"
-                  placeholder="Email address"
-                  {...register('email')}
+                  placeholder="Username"
+                  {...register('username')}
                 />
               </Label>
-              {errors.email && (
+              {errors.username && (
                 <div className="mt-1 text-sm text-red-600">
-                  {errors.email.message}
+                  {errors.username.message}
                 </div>
               )}
             </div>

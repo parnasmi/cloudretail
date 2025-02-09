@@ -1,20 +1,12 @@
 import zod from 'zod';
 import express from 'express';
 import { parseAuth } from './parseAuth.js';
-
-type Method = 'get' | 'post' | 'put' | 'delete';
+import { Endpoint } from './shared.js';
 
 export class HttpResponse<Body> {
   constructor(
     public readonly status: number,
     public readonly body: Body,
-  ) {}
-}
-
-export class Endpoint<_RequestParams> {
-  constructor(
-    public readonly method: Method,
-    public readonly path: string,
   ) {}
 }
 
